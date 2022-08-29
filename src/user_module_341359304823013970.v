@@ -41,7 +41,7 @@ end
 
 initial selection          = '0;
 
-delay_341359304823013970 #(.LEN(2)) sel_delay [$clog2(REQUESTORS)-1:0] (
+delay_341359304823013970 #(.LEN(6)) sel_delay [$clog2(REQUESTORS)-1:0] (
 	.in(selection),
 	.out(selection_delayed)
 );
