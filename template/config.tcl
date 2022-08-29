@@ -43,6 +43,3 @@ set ::env(RT_MAX_LAYER) {met4}
 set ::env(VDD_NETS) [list {vccd1}]
 set ::env(GND_NETS) [list {vssd1}]
 
-set ::env(CLOCK_TREE_SYNTH) 0
-set ::env(PL_ESTIMATE_PARASITICS) 0
-set ::env(GLB_ESTIMATE_PARASITICS) 0
