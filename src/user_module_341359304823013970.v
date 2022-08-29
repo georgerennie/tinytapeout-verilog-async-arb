@@ -41,7 +41,7 @@ end
 
 initial selection          = '0;
 
-delay_341359304823013970 #(.LEN(4)) sel_delay [$clog2(REQUESTORS)-1:0] (
+delay_341359304823013970 #(.LEN(2)) sel_delay [$clog2(REQUESTORS)-1:0] (
 	.in(selection),
 	.out(selection_delayed)
 );
@@ -63,11 +63,11 @@ module delay_341359304823013970 #(
 	output out
 );
 
-`ifdef SYNTHESIS
-
-wire [LEN:0] stages;
 assign stages[0] = in;
 assign out       = stages[LEN];
+
+`ifdef SYNTHESIS
+wire [LEN:0] stages;
 
 (* keep, dont_touch *) sky130_fd_sc_hd__dlymetal6s6s_1 delay [LEN-1:0] (
 	.A(stages[LEN-1:0]),
@@ -78,8 +78,8 @@ assign out       = stages[LEN];
 
 `else
 
-reg out;
-always @* out <= #10 in;
+reg [LEN:0] stages;
+always @* stages[LEN:1] <= #10 stages[LEN-1:0];
 
 `endif
 
