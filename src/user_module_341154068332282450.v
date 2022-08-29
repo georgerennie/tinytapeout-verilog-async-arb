@@ -1,56 +1,63 @@
 `default_nettype none
 
-//  Top level io for this module should stay the same to fit into the scan_wrapper.
-//  The pin connections within the user_module are up to you,
-//  although (if one is present) it is recommended to place a clock on io_in[0].
-//  This allows use of the internal clock divider if you wish.
-module user_module_341154068332282450(
-  input [7:0] io_in, 
-  output [7:0] io_out
+module async_rr_arbiter #(
+	parameter REQUESTORS = 8
+) (
+	input  wire [REQUESTORS-1:0] request,
+	output wire [REQUESTORS-1:0] grant
 );
 
-  wire pdm_out;
+reg  [$clog2(REQUESTORS)-1:0] selection;
+wire [$clog2(REQUESTORS)-1:0] selection_delayed;
+wire [$clog2(REQUESTORS)-1:0] next_selection;
+reg  [$clog2(REQUESTORS)-1:0] selection_gray;
+wire [$clog2(REQUESTORS)-1:0] next_selection_gray;
+wire [REQUESTORS-1:0]         selection_gray_oh;
 
-  assign io_out[0] = pdm_out;
-  assign io_out[1] = ~pdm_out;
+wire                          any_req;
+wire                          any_grant;
+wire                          inc_selection;
 
-  pdm_341154068332282450 pdm_core(
-    .pdm_input(io_in[7:3]),
-    .write_en(io_in[2]),
-    .reset(io_in[1]),
-    .clk(io_in[0]),    
-    .pdm_out(pdm_out)
-  );
+always @* begin
+	if (any_req && !any_grant) begin
+		selection      <= next_selection;
+		selection_gray <= next_selection_gray;
+	end
+end
+
+initial selection          = '0;
+
+delay #(.LEN(6)) sel_delay [$clog2(REQUESTORS)-1:0] (
+	.in(selection),
+	.out(selection_delayed)
+);
+
+assign next_selection      = selection_delayed + 1'b1;
+assign next_selection_gray = next_selection ^ (next_selection >> 1'b1);
+assign selection_gray_oh   = 1'b1 << selection_gray;
+
+assign grant               = request & selection_gray_oh;
+assign any_req             = |request;
+assign any_grant           = |grant;
 
 endmodule
 
-//  Any submodules should be included in this file,
-//  so they are copied into the main TinyTapeout repo.
-//  Appending your ID to any submodules you create 
-//  ensures there are no clashes in full-chip simulation.
-module pdm_341154068332282450(
-    input [4:0] pdm_input,
-    input       write_en,
-    input       clk, reset,    
-    output      pdm_out
+module delay #(
+	parameter LEN = 1
+) (
+	input  wire in,
+	output wire out
 );
 
-reg [4:0] accumulator;
-reg [4:0] input_reg;
+wire [LEN:0] stages;
+assign stages[0] = in;
+assign out       = stages[LEN];
 
-wire [5:0] sum;
-
-assign sum = input_reg + accumulator;
-assign pdm_out = sum[5];
-
-always @(posedge clk or posedge reset) begin
-    if (reset) begin 
-        input_reg <= 5'h00 ;
-        accumulator <= 5'h00;
-    end else begin
-        accumulator <= sum[4:0];
-        if (write_en) input_reg <= pdm_input ;
-    end
-end
+sky130_fd_sc_hd__dlymetal6s6s_1 delay [LEN-1:0] (
+	.A(stages[LEN-1:0]),
+	.X(stages[LEN:1]),
+	.VPWR(1'b1),
+	.VGND(1'b0)
+);
 
 endmodule
