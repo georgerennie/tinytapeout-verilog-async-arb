@@ -59,19 +59,28 @@ endmodule
 module delay_341359304823013970 #(
 	parameter LEN = 1
 ) (
-	input  wire in,
-	output wire out
+	input  in,
+	output out
 );
+
+`ifdef SYNTHESIS
 
 wire [LEN:0] stages;
 assign stages[0] = in;
 assign out       = stages[LEN];
 
-sky130_fd_sc_hd__dlymetal6s6s_1 delay [LEN-1:0] (
+(* keep, dont_touch *) sky130_fd_sc_hd__dlymetal6s6s_1 delay [LEN-1:0] (
 	.A(stages[LEN-1:0]),
 	.X(stages[LEN:1]),
 	.VPWR(1'b1),
 	.VGND(1'b0)
 );
+
+`else
+
+reg out;
+always @* out <= #10 in;
+
+`endif
 
 endmodule
