@@ -41,7 +41,7 @@ end
 
 initial selection          = '0;
 
-delay_341359304823013970 #(.LEN(6)) sel_delay [$clog2(REQUESTORS)-1:0] (
+delay_341359304823013970 #(.LEN(4)) sel_delay [$clog2(REQUESTORS)-1:0] (
 	.in(selection),
 	.out(selection_delayed)
 );
@@ -79,7 +79,7 @@ wire [LEN:0] stages;
 `else
 
 reg [LEN:0] stages;
-always @* stages[LEN:1] <= #10 stages[LEN-1:0];
+always @* stages[LEN:1] <= #1 stages[LEN-1:0];
 
 `endif
 
