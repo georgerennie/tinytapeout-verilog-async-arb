@@ -1,5 +1,19 @@
 `default_nettype none
 
+module user_module_341154068332282450 (
+	input  wire [7:0] io_in, 
+	output wire [7:0] io_out
+);
+
+async_rr_arbiter #(
+	.REQUESTORS(8)
+) arb (
+	.request(io_in),
+	.grant(io_out)
+);
+
+endmodule
+
 module async_rr_arbiter #(
 	parameter REQUESTORS = 8
 ) (
