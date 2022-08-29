@@ -73,5 +73,6 @@ jobs:
             runs/wokwi/results/final/*
             runs/wokwi/reports/final_summary_report.csv
             runs/wokwi/reports/synthesis/1-synthesis.stat.rpt.strategy4
+            runs/workwi/reports/*
             gds_render.svg
             gds.html
