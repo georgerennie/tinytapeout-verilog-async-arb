@@ -1,11 +1,11 @@
 `default_nettype none
 
-module user_module_341154068332282450 (
+module user_module_341359304823013970 (
 	input  wire [7:0] io_in, 
 	output wire [7:0] io_out
 );
 
-async_rr_arbiter #(
+async_rr_arbiter_341359304823013970 #(
 	.REQUESTORS(8)
 ) arb (
 	.request(io_in),
@@ -14,7 +14,7 @@ async_rr_arbiter #(
 
 endmodule
 
-module async_rr_arbiter #(
+module async_rr_arbiter_341359304823013970 #(
 	parameter REQUESTORS = 8
 ) (
 	input  wire [REQUESTORS-1:0] request,
@@ -41,7 +41,7 @@ end
 
 initial selection          = '0;
 
-delay #(.LEN(6)) sel_delay [$clog2(REQUESTORS)-1:0] (
+delay_341359304823013970 #(.LEN(4)) sel_delay [$clog2(REQUESTORS)-1:0] (
 	.in(selection),
 	.out(selection_delayed)
 );
@@ -56,7 +56,7 @@ assign any_grant           = |grant;
 
 endmodule
 
-module delay #(
+module delay_341359304823013970 #(
 	parameter LEN = 1
 ) (
 	input  wire in,
