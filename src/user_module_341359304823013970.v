@@ -47,7 +47,7 @@ delay_341359304823013970 #(.LEN(4)) sel_delay [$clog2(REQUESTORS)-1:0] (
 );
 
 assign next_selection      = selection_delayed + 1'b1;
-assign next_selection_gray = next_selection ^ (next_selection >> 1'b1);
+assign next_selection_gray = next_selection ^ {1'b0, next_selection[$clog2(REQUESTORS)-1:1]};
 assign selection_gray_oh   = 1'b1 << selection_gray;
 
 assign grant               = request & selection_gray_oh;
