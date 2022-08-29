@@ -69,7 +69,7 @@ assign out       = stages[LEN];
 `ifdef SYNTHESIS
 wire [LEN:0] stages;
 
-(* keep, dont_touch *) sky130_fd_sc_hd__dlymetal6s6s_1 delay [LEN-1:0] (
+(* keep *) sky130_fd_sc_hd__dlymetal6s6s_1 delay [LEN-1:0] (
 	.A(stages[LEN-1:0]),
 	.X(stages[LEN:1]),
 	.VPWR(1'b1),
