@@ -59,8 +59,10 @@ module scan_wrapper_USER_MODULE_ID (
         .SCD        (module_data_out),
         .SCE        (scan_select_in),
         .Q          (scan_data_out),
+    `ifdef WITH_POWER
         .VPWR       (1'b1),
         .VGND       (1'b0)
+    `endif
     );
 
     // latch is used to latch the input data of the user module while the scan chain is used to capture the user module's outputs
@@ -69,8 +71,10 @@ module scan_wrapper_USER_MODULE_ID (
         .D          (scan_data_out),
         .GATE       (latch_enable_in),
         .Q          (module_data_in),
+    `ifdef WITH_POWER
         .VPWR       (1'b1),
         .VGND       (1'b0)
+    `endif
     );
     `endif
     `endif
